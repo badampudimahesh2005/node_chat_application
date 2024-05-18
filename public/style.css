@@ -1,0 +1,47 @@
+.cursor-pointer{
+    cursor: pointer;
+}
+
+
+.outer{
+    margin-left: 30px;
+    padding-left: 30px;
+}
+
+#chat-container{
+    /* background-color:#E1BEE7 ; */
+    width: 70%;
+    height: 450px;
+    overflow: scroll;
+    /* background: linear-gradient(90deg, #ff5733, #e9ff33); Adjust colors as needed */
+    background: linear-gradient(135deg, #ffb6c1, #87cefa);
+
+
+}
+.border{
+    width:50% ;
+
+}
+.chat-section{
+    display: none; 
+}
+
+.online-status{
+    color: green;
+}
+.offline-status{
+    color: red;
+}
+
+/* chat contianer */
+.current-user-chat{
+    text-align: right;
+    margin: 10px;
+    color: black;
+}
+
+.distance-user-chat{
+    text-align: left;
+    margin: 10px;
+    color: black;
+}

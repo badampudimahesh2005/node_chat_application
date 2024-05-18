@@ -1,0 +1,141 @@
+<!-- 
+<body>
+    <h1>Register</h1>
+    <form action="/register" method="POST" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Enter Name" required>
+        <br><br>
+        <input type="email" name="email" placeholder="Enter Email" required>
+        <br><br>
+        <input type="file" name="image"  >
+        <br><br>
+        <input type="password" name="password" placeholder="Enter password" required>
+        <br><br>
+        <input type="submit" value="Register">
+
+
+    </form>
+  
+
+    <% if(typeof message!== 'undefined'){ %>
+        <p style="color:green"><%=message%></p>
+    <% } %> -->
+
+
+
+
+
+
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Register</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+            /* Gradient Background */
+            body {
+                background: linear-gradient(90deg, #ff5733, #e9ff33); /* Adjust colors as needed */
+                padding-top: 50px;
+            }
+            
+            /* Multi-colored Background */
+            .register-form {
+                background: #ffffff; /* Fallback color */
+                background: linear-gradient(135deg, #ffffff 50%, #f7f7f7 50%); /* Split background colors */
+                max-width: 400px;
+                margin: 0 auto;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+    
+            /* Form Styling */
+            .register-form input[type="text"],
+            .register-form input[type="email"],
+            .register-form input[type="password"],
+            .register-form input[type="file"],
+            .register-form input[type="submit"] {
+                margin-bottom: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="register-form">
+                <h1 class="text-center">Register</h1>
+                <form action="/register" method="POST" enctype="multipart/form-data">
+                    <input type="text" name="name" class="form-control" placeholder="Enter Name" required>
+                    <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
+                    <input type="file" name="image" class="form-control-file">
+                    <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </form>
+                <% if(typeof message !== 'undefined') { %>
+                    <p style="color:green"><%= message %></p>
+                <% } %>
+            </div>
+        </div>
+    </body>
+    </html>
+    
+
+
+
+
+
+
+
+
+
+<!-- 
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom Styles */
+        body {
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+        .register-form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .register-form input[type="text"],
+        .register-form input[type="email"],
+        .register-form input[type="password"],
+        .register-form input[type="file"],
+        .register-form input[type="submit"] {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-form">
+            <h1 class="text-center">Register</h1>
+            <form action="/register" method="POST" enctype="multipart/form-data">
+                <input type="text" name="name" class="form-control" placeholder="Enter Name" required>
+                <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
+                <input type="file" name="image" class="form-control-file">
+                <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+            <% if(typeof message !== 'undefined') { %>
+                <p style="color:green"><%= message %></p>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html> -->

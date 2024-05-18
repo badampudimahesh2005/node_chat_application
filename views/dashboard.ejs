@@ -1,0 +1,198 @@
+
+<%-include('layouts/header.ejs') %>
+
+
+<br><br><br>
+
+
+<figure>
+    <blockquote class="blockquote">
+      <h2 class="mb-4">Hi there, <%= user.name %> !</h2>
+    </blockquote>
+    <figcaption class="blockquote-footer">
+        Welcome to our <cite title="Source Title">chat community!</cite>
+    </figcaption>
+  </figure>
+
+  
+
+<div class="row outer">
+   <div class="col-md-3">
+    <!-- //this is part os users -->
+        <ul class="list-group">
+         <%  if(users.length>0){ 
+            for(let i=0;i<users.length;i++){ %>
+                <!-- creating a data-id attribute to store the current id for futrue uses -->
+           <li class="list-group-item list-group-item-dark cursor-pointer user-list" data-id="<%= users[i]['_id'] %>">
+          
+            <img src="/images/<%= users[i]['image'] %>" alt="" width="50px" height="50px">
+                    
+           <%= users[i]['name'] %>
+
+            <% if(users[i]['is_online']==1) {  %>
+          <sup class="online-status" id="<%= users[i]['_id'] %>-status">Online</sup>
+          <%  } else {  %>
+            <sup class="offline-status" id="<%=users[i]['_id'] %>-status">Offline</sup>
+
+           <%} %>
+           </li>
+           <% } } %>
+        </ul>
+    </div>
+
+
+<!-- *********************************************** -->
+
+<!-- click to open charts  -->
+
+<div class="col-md-8">
+    <h3 class="start-head">Begin Your Chat Adventure!</h3>
+    <img src="https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQWY5K9S1i3yydH_Yxw79TYJ3Q5TPQQJ4JMeB5jdtwbjYcjU6kz6l8CaPxIFIS5JY3m5QIN4aNIF_kvEEJ7VVHecd3DvQqgxaTG7Way-uJjG0DegUwYlVwip4f4DGKUWm3Zw8JImEQzRhAbr9Mc12jGIw4lw.jpg?r=926"
+      height="450px" width="100%" padding-left="60px" alt="" class="start-head">
+    <!-- <img src="./avatar.jpg"  height="450px" width="100%" padding-left="60px" alt="" class="start-head"> -->
+    
+    <div class="chat-section">
+        <div id="chat-container">
+
+               <!-- <div class="current-user-chat">
+                <h5>Hii</h5>
+               </div>
+               <div class="distance-user-chat">
+                <h5>Hello</h5>
+               </div> -->
+
+        </div> 
+        <form action=" " id="chat-form">
+            <input type="text" name="message" placeholder="Enter Message" id="message" class="border" required>
+            <input type="submit"value="Send Message" class="btn btn-primary">
+        </form>
+    </div>
+</div>
+</div>
+<!-- ******************************** -->
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+var sender_id= '<%= user._id %>'; //for interpolation in script u need to mention that in string formt
+var receiver_id;
+var socket= io('/user-namespace',{
+    auth:{
+        token:'<%= user._id%>'
+    }
+});
+
+// socket.on('connect', function() {
+//     console.log('Socket connected');
+//     // You can put your other socket-related logic here
+// });
+
+    $(document).ready(function(){
+        $('.user-list').click(function(){
+            var userId=$(this).attr('data-id');
+            receiver_id=userId;
+            $('.start-head').hide();
+            $('.chat-section').show();
+
+            socket.emit('existsChat',{sender_id:sender_id ,receiver_id:receiver_id});
+
+        })
+    })
+
+    //update user online status
+   socket.on('getOnlineUser',function(data){
+    $('#'+data.user_id+'-status').text("Online");
+    $('#'+data.user_id+'-status').removeClass('offline-status');
+    $('#'+data.user_id+'-status').addClass("online-status");
+
+
+   })
+    //update user offline status
+    socket.on('getOfflineUser',function(data){
+    $('#'+data.user_id+'-status').text("Offline");
+    $('#'+data.user_id+'-status').removeClass('online-status');
+    $('#'+data.user_id+'-status').addClass("offline-status");
+
+
+   })
+
+
+   //chat save of user
+   $('#chat-form').submit(function(event){
+    event.preventDefault();
+    var message=$('#message').val();
+    $.ajax({
+        url:'/save-chat',
+        type:'POST',
+        data:{sender_id:sender_id,receiver_id:receiver_id,message:message},
+         success:function(response){
+        if(response.success){
+            console.log(response.data.message);
+            $('#message').val('');
+            let chat=response.data.message;
+            let html= ` 
+            <div class="current-user-chat">
+                <h5> ${chat}</h5>
+               </div>
+            `;
+
+            $('#chat-container').append(html);
+
+            socket.emit('newChat',response.data);
+            scrollChat();
+
+        }else{
+            alert(data.msg); //if err show the error that we r throwing in save chat router
+
+        }
+        }
+    });
+   });
+//recieving broadcast event of chat message
+   socket.on('loadNewChat', function(data){
+    if(sender_id == data.receiver_id  && receiver_id==data.sender_id ){
+        
+    let html=` 
+    <div class="distance-user-chat">
+                <h5> ${data.message}</h5>
+               </div> 
+    `;
+    $('#chat-container').append(html);
+    }
+
+   })
+
+//load old chats 
+socket.on('loadChats',function(data){
+    $('#chat-container').html('');
+   var chats= data.chats;
+   let html='';
+   for(let x=0; x<chats.length;x++){
+    let addClass='';
+    if(chats[x]['sender_id']==sender_id){
+        addClass='current-user-chat';
+    }else{
+        addClass='distance-user-chat';
+    }
+    html+=`
+    <div class="${addClass}">
+        <h5> ${chats[x]['message']} </h5>
+        </div>
+    `;
+   }
+   $('#chat-container').append(html);
+   scrollChat();
+})
+
+
+//scroll chat problem
+function scrollChat(){
+    $('#chat-container').animate({
+        scrollTop:$('#chat-container').offset().top+ $('#chat-container')[0].scrollHeight
+    },0);
+}
+
+</script>
+
+
+<%-include('layouts/footer.ejs') %>
